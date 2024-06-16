@@ -1,33 +1,11 @@
 import { z } from "zod";
-import { CarStatus } from "./booking.constant";
 
-export const carValidationSchema = z.object({
+const bookingValidationSchema = z.object({
   body: z.object({
-    name: z.string({ required_error: "Name is required." }),
-    description: z.string({ required_error: "Description is required." }),
-    color: z.string({ required_error: "Color is required." }),
-    isElectric: z.boolean({ required_error: "isElectric is required." }),
-    features: z.array(z.string(), { required_error: "Features are required." }),
-    pricePerHour: z.number({ required_error: "Price per hour is required." }),
-    status: z.enum([...CarStatus] as [string, ...string[]]).optional(),
-    isDeleted: z.boolean().optional(),
+    date: z.string({ required_error: "Booking date is required." }),
+    startTime: z.string({ required_error: "startTime is required." }),
+    carId: z.string({ required_error: "Car Id is required." }),
   }),
 });
 
-export const updateCarValidationSchema = z.object({
-  body: z.object({
-    name: z.string().optional(),
-    description: z.string().optional(),
-    color: z.string().optional(),
-    isElectric: z.boolean().optional(),
-    features: z.array(z.string()).optional(),
-    pricePerHour: z.number().optional(),
-    status: z.enum([...CarStatus] as [string, ...string[]]).optional(),
-    isDeleted: z.boolean().optional(),
-  }),
-});
-
-export const CarValidationSchema = {
-  carValidationSchema,
-  updateCarValidationSchema,
-};
+export { bookingValidationSchema };

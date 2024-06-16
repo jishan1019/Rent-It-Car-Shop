@@ -1,44 +1,44 @@
 import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
-import { CarService } from "./booking.service";
+import { BookingService } from "./booking.service";
 
-const getAllCar = catchAsync(async (req, res) => {
-  const result = await CarService.getAllCarFromDB();
+const getAllBooking = catchAsync(async (req, res) => {
+  const result = await BookingService.getAllBookingFromDB();
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "Cars retrieved successfully",
+    message: "Bookings retrieved successfully",
     data: result,
   });
 });
 
-const getSingleCar = catchAsync(async (req, res) => {
+const getSingleBooking = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const result = await CarService.getSingleCarFromDB(id);
+  const result = await BookingService.getSingleBookingFromDB(id);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: "A Car retrieved successfully",
+    message: "My Bookings retrieved successfully",
     data: result,
   });
 });
 
-const createCar = catchAsync(async (req, res) => {
-  const result = await CarService.createCarIntroDb(req.body);
+const createBooking = catchAsync(async (req, res) => {
+  const result = await BookingService.createBookingIntroDb(req.body);
 
   sendResponse(res, {
-    statusCode: httpStatus.CREATED,
+    statusCode: httpStatus.OK,
     success: true,
-    message: "Car created successfully",
+    message: "Car booked successfully",
     data: result,
   });
 });
 
-export const CarController = {
-  getAllCar,
-  getSingleCar,
-  createCar,
+export const BookingController = {
+  getAllBooking,
+  getSingleBooking,
+  createBooking,
 };

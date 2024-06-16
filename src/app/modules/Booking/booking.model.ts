@@ -1,44 +1,33 @@
 import { Schema, model } from "mongoose";
-import { TCar } from "./booking.interface";
-import { CarStatus } from "./booking.constant";
+import { TBooking } from "./booking.interface";
 
-const carSchema = new Schema<TCar>(
+const bookingSchema = new Schema<TBooking>(
   {
-    name: {
+    date: {
       type: String,
-      required: [true, "Name is required"],
+      required: [true, "Booking date is required"],
     },
-    description: {
+    startTime: {
       type: String,
-      required: [true, "Description is required"],
+      required: [true, "Start Time is required"],
     },
-    color: {
+    endTime: {
       type: String,
-      required: [true, "Color is required"],
     },
-    isElectric: {
-      type: Boolean,
-      required: [true, "isElectric is required"],
+    user: {
+      type: Schema.Types.ObjectId,
+      required: [true, "User Id is required"],
+      ref: "User",
     },
-    features: {
-      type: [String],
-      required: [true, "Features are required"],
+    car: {
+      type: Schema.Types.ObjectId,
+      required: [true, "Car Id is required"],
+      ref: "Car",
     },
-    pricePerHour: {
+
+    totalCost: {
       type: Number,
-      required: [true, "Price per hour is required"],
-    },
-    status: {
-      type: String,
-      enum: {
-        values: CarStatus,
-        message: "{VALUE} is not a valid status",
-      },
-      default: "available",
-    },
-    isDeleted: {
-      type: Boolean,
-      default: false,
+      default: 0,
     },
   },
   {
@@ -46,21 +35,6 @@ const carSchema = new Schema<TCar>(
   }
 );
 
-carSchema.pre("find", async function (next) {
-  this.find({ isDeleted: { $ne: true } });
-  next();
-});
+const BookingModel = model<TBooking>("booking", bookingSchema);
 
-carSchema.pre("findOne", async function (next) {
-  this.findOne({ isDeleted: { $ne: true } });
-  next();
-});
-
-carSchema.pre("aggregate", async function (next) {
-  this.pipeline().unshift({ $match: { isDeleted: { $ne: true } } });
-  next();
-});
-
-const CarModel = model<TCar>("Car", carSchema);
-
-export { CarModel };
+export { BookingModel };

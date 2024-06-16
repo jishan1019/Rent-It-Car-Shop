@@ -1,20 +1,17 @@
 import { Router } from "express";
 import validateRequest from "../../middlewares/validateRequest";
-import {
-  carValidationSchema,
-  updateCarValidationSchema,
-} from "./booking.validation";
-import { CarController } from "./booking.controller";
+import { bookingValidationSchema } from "./booking.validation";
+import { BookingController } from "./booking.controller";
 
 const router = Router();
 
-router.get("/", CarController.getAllCar);
-router.get("/:id", CarController.getSingleCar);
+router.get("/", BookingController.getAllBooking); //admin
+router.get("/my-bookings", BookingController.getSingleBooking); //user all booking
 
 router.post(
   "/",
-  validateRequest(carValidationSchema),
-  CarController.createCar // admin
+  validateRequest(bookingValidationSchema),
+  BookingController.createBooking
 );
 
 export const BookingRoutes = router;

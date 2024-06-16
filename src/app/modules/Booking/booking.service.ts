@@ -1,25 +1,23 @@
-import httpStatus from "http-status";
-import AppError from "../../errors/AppError";
-import { CarModel } from "./booking.model";
-import { TCar } from "./booking.interface";
+import { TBooking } from "./booking.interface";
+import { BookingModel } from "./booking.model";
 
-const getAllCarFromDB = async () => {
-  const result = await CarModel.find();
+const getAllBookingFromDB = async () => {
+  const result = await BookingModel.find();
   return result;
 };
 
-const getSingleCarFromDB = async (id: string) => {
-  const result = await CarModel.findOne({ _id: id });
+const getSingleBookingFromDB = async (id: string) => {
+  const result = await BookingModel.findOne({ _id: id });
   return result;
 };
 
-const createCarIntroDb = async (payload: TCar) => {
-  const result = await CarModel.create(payload);
+const createBookingIntroDb = async (payload: TBooking) => {
+  const result = await BookingModel.create(payload);
   return result;
 };
 
-export const CarService = {
-  getAllCarFromDB,
-  getSingleCarFromDB,
-  createCarIntroDb,
+export const BookingService = {
+  getAllBookingFromDB,
+  getSingleBookingFromDB,
+  createBookingIntroDb,
 };
