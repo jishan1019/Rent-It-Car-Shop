@@ -18,7 +18,7 @@ const createUser = catchAsync(async (req, res) => {
   const result = await AuthService.createUserIntroDb(req.body);
 
   sendResponse(res, {
-    statusCode: httpStatus.OK,
+    statusCode: httpStatus.CREATED,
     success: true,
     message: "User is create successfully",
     data: result,
