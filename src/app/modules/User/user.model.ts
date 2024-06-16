@@ -19,6 +19,7 @@ const userSchema = new Schema<TUser>(
         message: "{VALUE} is not a valid role",
       },
       required: [true, "Role is required"],
+      default: "user",
     },
     password: {
       type: String,

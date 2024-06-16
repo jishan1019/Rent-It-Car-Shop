@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import { TCar } from "./car.interface";
+import { CarStatus } from "./car.constant";
 
 const carSchema = new Schema<TCar>(
   {
@@ -26,6 +27,18 @@ const carSchema = new Schema<TCar>(
     pricePerHour: {
       type: Number,
       required: [true, "Price per hour is required"],
+    },
+    status: {
+      type: String,
+      enum: {
+        values: CarStatus,
+        message: "{VALUE} is not a valid status",
+      },
+      default: "available",
+    },
+    isDeleted: {
+      type: Boolean,
+      default: "available",
     },
   },
   {
