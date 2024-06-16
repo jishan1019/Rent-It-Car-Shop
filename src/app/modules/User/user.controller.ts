@@ -26,7 +26,32 @@ const getSingleUser = catchAsync(async (req, res) => {
   });
 });
 
+const createUser = catchAsync(async (req, res) => {
+  const result = await UserService.createUserIntroDb(req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User is create successfully",
+    data: result,
+  });
+});
+
+const updateUser = catchAsync(async (req, res) => {
+  const { _id } = req.params;
+  const result = await UserService.updateUserIntroDb(_id, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User is update successfully",
+    data: result,
+  });
+});
+
 export const UserController = {
   getAllUser,
   getSingleUser,
+  createUser,
+  updateUser,
 };
