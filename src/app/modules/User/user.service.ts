@@ -23,8 +23,14 @@ const updateUserIntroDb = async (id: string, payload: Partial<TUser>) => {
   return result;
 };
 
+const deleteSingleUserFromDB = async (id: string) => {
+  const result = await UserModel.deleteOne({ _id: id });
+  return result;
+};
+
 export const UserService = {
   getAllUserFromDB,
   getSingleUserFromDB,
   updateUserIntroDb,
+  deleteSingleUserFromDB,
 };
