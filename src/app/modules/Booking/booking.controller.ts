@@ -4,7 +4,8 @@ import sendResponse from "../../utils/sendResponse";
 import { BookingService } from "./booking.service";
 
 const getAllBooking = catchAsync(async (req, res) => {
-  const result = await BookingService.getAllBookingFromDB();
+  const query = req.query;
+  const result = await BookingService.getAllBookingFromDB(query);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -15,8 +16,8 @@ const getAllBooking = catchAsync(async (req, res) => {
 });
 
 const getSingleBooking = catchAsync(async (req, res) => {
-  const { id } = req.params;
-  const result = await BookingService.getSingleBookingFromDB(id);
+  const id = "userId";
+  const result = await BookingService.getSingleUserBookingFromDB(id);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

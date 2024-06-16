@@ -1,13 +1,27 @@
+import QueryBuilder from "../../builder/QueryBuilder";
+import { bookingSearchableFields } from "./booking.constant";
 import { TBooking } from "./booking.interface";
 import { BookingModel } from "./booking.model";
 
-const getAllBookingFromDB = async () => {
-  const result = await BookingModel.find();
+const getAllBookingFromDB = async (query: Record<string, unknown>) => {
+  const bookingQuery = new QueryBuilder(
+    BookingModel.find().populate("User").populate("Car"),
+    query
+  )
+    .search(bookingSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await bookingQuery.modelQuery;
   return result;
 };
 
-const getSingleBookingFromDB = async (id: string) => {
-  const result = await BookingModel.findOne({ _id: id });
+const getSingleUserBookingFromDB = async (id: string) => {
+  const result = await BookingModel.find({ _id: id })
+    .populate("User")
+    .populate("Car");
   return result;
 };
 
@@ -18,6 +32,6 @@ const createBookingIntroDb = async (payload: TBooking) => {
 
 export const BookingService = {
   getAllBookingFromDB,
-  getSingleBookingFromDB,
+  getSingleUserBookingFromDB,
   createBookingIntroDb,
 };
