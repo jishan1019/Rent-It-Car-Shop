@@ -1,4 +1,4 @@
-export type TUser = {
+export type TCar = {
   name: string;
   description: string;
   color: string;
