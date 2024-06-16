@@ -16,8 +16,8 @@ const getAllBooking = catchAsync(async (req, res) => {
 });
 
 const getSingleBooking = catchAsync(async (req, res) => {
-  const id = "userId";
-  const result = await BookingService.getSingleUserBookingFromDB(id);
+  const userId = "666f00d37c003bfefe6ed611";
+  const result = await BookingService.getSingleUserBookingFromDB(userId);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
@@ -28,7 +28,15 @@ const getSingleBooking = catchAsync(async (req, res) => {
 });
 
 const createBooking = catchAsync(async (req, res) => {
-  const result = await BookingService.createBookingIntroDb(req.body);
+  const userId = "666f00d37c003bfefe6ed611";
+
+  const bookingData = {
+    user: userId,
+    car: req.body.carId,
+    ...req.body,
+  };
+
+  const result = await BookingService.createBookingIntroDb(bookingData);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

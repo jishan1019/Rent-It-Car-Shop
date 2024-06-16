@@ -13,6 +13,7 @@ const bookingSchema = new Schema<TBooking>(
     },
     endTime: {
       type: String,
+      default: null,
     },
     user: {
       type: Schema.Types.ObjectId,
