@@ -1,6 +1,7 @@
 import { Router } from "express";
 import validateRequest from "../../middlewares/validateRequest";
 import {
+  carReturnValidationSchema,
   carValidationSchema,
   updateCarValidationSchema,
 } from "./car.validation";
@@ -15,6 +16,12 @@ router.post(
   "/",
   validateRequest(carValidationSchema),
   CarController.createCar // admin
+);
+
+router.put(
+  "/return",
+  validateRequest(carReturnValidationSchema),
+  CarController.returnCar //admin
 );
 
 router.put(

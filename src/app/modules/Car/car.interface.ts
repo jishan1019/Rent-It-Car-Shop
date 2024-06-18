@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 export type TCarStatus = "available" | "unavailable";
 
 export type TCar = {
@@ -9,4 +11,9 @@ export type TCar = {
   pricePerHour: number;
   status?: TCarStatus;
   isDeleted?: boolean;
+};
+
+export type TReturnCar = {
+  bookingId: Types.ObjectId;
+  endTime: string;
 };

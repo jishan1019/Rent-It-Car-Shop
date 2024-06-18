@@ -1,7 +1,10 @@
 import httpStatus from "http-status";
 import AppError from "../../errors/AppError";
 import { CarModel } from "./car.model";
-import { TCar } from "./car.interface";
+import { TCar, TReturnCar } from "./car.interface";
+import { BookingModel } from "../Booking/booking.model";
+import { calculateTotalCost } from "./car.utils";
+import { CarBookingStatus } from "./car.constant";
 
 const getAllCarFromDB = async () => {
   const result = await CarModel.find();
@@ -15,6 +18,50 @@ const getSingleCarFromDB = async (id: string) => {
 
 const createCarIntroDb = async (payload: TCar) => {
   const result = await CarModel.create(payload);
+  return result;
+};
+
+const returnCarIntoDb = async (payload: TReturnCar) => {
+  const bookingId = payload.bookingId;
+
+  const bookingInfo = await BookingModel.findById(bookingId)
+    .populate("user")
+    .populate("car");
+
+  if (!bookingInfo) {
+    throw new AppError(httpStatus.BAD_REQUEST, "This Booking not exists.");
+  }
+
+  const { pricePerHour, _id: carId } = bookingInfo?.car || {};
+
+  const carUpdateResult = await CarModel.findByIdAndUpdate(
+    carId,
+    { status: CarBookingStatus.AVAILABLE },
+    { new: true }
+  );
+
+  const totalCost = calculateTotalCost(
+    bookingInfo?.startTime,
+    payload?.endTime,
+    pricePerHour
+  );
+
+  const bookingUpdateData = {
+    endTime: payload.endTime,
+    totalCost,
+  };
+
+  const updateBookingResult = await BookingModel.findByIdAndUpdate(
+    bookingId,
+    bookingUpdateData,
+    { new: true }
+  );
+
+  const result = await BookingModel.findById(updateBookingResult?._id)
+    .populate("user")
+    .populate("car")
+    .exec();
+
   return result;
 };
 
@@ -41,6 +88,7 @@ export const CarService = {
   getAllCarFromDB,
   getSingleCarFromDB,
   createCarIntroDb,
+  returnCarIntoDb,
   updateCarIntroDb,
   deleteSingleCarFromDB,
 };
