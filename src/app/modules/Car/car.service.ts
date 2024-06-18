@@ -5,6 +5,7 @@ import { TCar, TReturnCar } from "./car.interface";
 import { BookingModel } from "../Booking/booking.model";
 import { calculateTotalCost } from "./car.utils";
 import { CarBookingStatus } from "./car.constant";
+import mongoose from "mongoose";
 
 const getAllCarFromDB = async () => {
   const result = await CarModel.find();
@@ -32,37 +33,63 @@ const returnCarIntoDb = async (payload: TReturnCar) => {
     throw new AppError(httpStatus.BAD_REQUEST, "This Booking not exists.");
   }
 
-  const { pricePerHour, _id: carId } = bookingInfo?.car || {};
+  const session = await mongoose.startSession();
 
-  const carUpdateResult = await CarModel.findByIdAndUpdate(
-    carId,
-    { status: CarBookingStatus.AVAILABLE },
-    { new: true }
-  );
+  try {
+    session.startTransaction();
 
-  const totalCost = calculateTotalCost(
-    bookingInfo?.startTime,
-    payload?.endTime,
-    pricePerHour
-  );
+    const { pricePerHour, _id: carId } = bookingInfo?.car || {};
 
-  const bookingUpdateData = {
-    endTime: payload.endTime,
-    totalCost,
-  };
+    const carUpdateResult = await CarModel.findByIdAndUpdate(
+      carId,
+      { status: CarBookingStatus.AVAILABLE },
+      { new: true, session }
+    );
 
-  const updateBookingResult = await BookingModel.findByIdAndUpdate(
-    bookingId,
-    bookingUpdateData,
-    { new: true }
-  );
+    if (!carUpdateResult) {
+      throw new AppError(httpStatus.BAD_REQUEST, "Failed to update car status");
+    }
 
-  const result = await BookingModel.findById(updateBookingResult?._id)
-    .populate("user")
-    .populate("car")
-    .exec();
+    const totalCost = calculateTotalCost(
+      bookingInfo?.startTime,
+      payload?.endTime,
+      pricePerHour
+    );
 
-  return result;
+    const bookingUpdateData = {
+      endTime: payload.endTime,
+      totalCost,
+    };
+
+    const updateBookingResult = await BookingModel.findByIdAndUpdate(
+      bookingId,
+      bookingUpdateData,
+      { new: true, session }
+    );
+
+    if (!updateBookingResult) {
+      throw new AppError(httpStatus.BAD_REQUEST, "Failed to update booking");
+    }
+
+    const result = await BookingModel.findById(updateBookingResult?._id)
+      .populate("user")
+      .populate("car")
+      .exec();
+
+    if (!result) {
+      throw new AppError(httpStatus.BAD_REQUEST, "Failed to get booking");
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return result;
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+
+    throw new AppError(httpStatus.BAD_REQUEST, "Failed to return car");
+  }
 };
 
 const updateCarIntroDb = async (id: string, payload: Partial<TCar>) => {
