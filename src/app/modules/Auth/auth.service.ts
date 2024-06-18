@@ -3,7 +3,7 @@ import { TUser } from "../User/user.interface";
 import { UserModel } from "../User/user.model";
 import AppError from "../../errors/AppError";
 import { TAuth } from "./auth.interface";
-import { createToken } from "./auth.utils";
+import { createToken, splitToken } from "./auth.utils";
 import config from "../../config";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
@@ -60,7 +60,13 @@ const createUserIntroDb = async (payload: TUser) => {
   return result;
 };
 
-const generateNewRefreshToken = async (token: string) => {
+const generateNewRefreshToken = async (oldToken: string) => {
+  if (!oldToken) {
+    throw new AppError(httpStatus.NOT_FOUND, "Old token not found");
+  }
+
+  const token = splitToken(oldToken) as string;
+
   const decoded = jwt.verify(
     token,
     config.jwt_refresh_secret as string

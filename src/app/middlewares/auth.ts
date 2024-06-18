@@ -6,13 +6,14 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../config";
 import { TUserRole } from "../modules/User/user.const";
 import { UserModel } from "../modules/User/user.model";
+import { splitToken } from "../modules/Auth/auth.utils";
 
 const auth = (...requiredRole: TUserRole[]) => {
   return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
-    const token = req.headers.authorization;
+    const token = splitToken(req.headers.authorization);
 
     if (!token) {
-      throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized");
+      throw new AppError(httpStatus.UNAUTHORIZED, "Token not found");
     }
 
     const decoded = jwt.verify(
@@ -29,7 +30,10 @@ const auth = (...requiredRole: TUserRole[]) => {
     }
 
     if (requiredRole && !requiredRole.includes(role)) {
-      throw new AppError(httpStatus.UNAUTHORIZED, "You are not authorized");
+      throw new AppError(
+        httpStatus.UNAUTHORIZED,
+        "You have no access to this route"
+      );
     }
 
     req.user = decoded as JwtPayload;

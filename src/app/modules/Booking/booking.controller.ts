@@ -16,7 +16,7 @@ const getAllBooking = catchAsync(async (req, res) => {
 });
 
 const getSingleBooking = catchAsync(async (req, res) => {
-  const userId = "666f00d37c003bfefe6ed611";
+  const userId = req.user.userId || "";
   const result = await BookingService.getSingleUserBookingFromDB(userId);
 
   sendResponse(res, {
@@ -28,7 +28,7 @@ const getSingleBooking = catchAsync(async (req, res) => {
 });
 
 const createBooking = catchAsync(async (req, res) => {
-  const userId = "666f00d37c003bfefe6ed611";
+  const userId = req.user.userId || "";
 
   const bookingData = {
     user: userId,

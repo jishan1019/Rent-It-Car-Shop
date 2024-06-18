@@ -10,3 +10,14 @@ export const createToken = (
     expiresIn: expiresIn,
   });
 };
+
+export const splitToken = (token: string | undefined): string | undefined => {
+  let splitToken;
+
+  if (token) {
+    const split = token.split(" ");
+    splitToken = split[1];
+  }
+
+  return splitToken;
+};
