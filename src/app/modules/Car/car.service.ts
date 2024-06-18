@@ -38,7 +38,9 @@ const returnCarIntoDb = async (payload: TReturnCar) => {
   try {
     session.startTransaction();
 
-    const { pricePerHour, _id: carId } = bookingInfo?.car || {};
+    const car = bookingInfo.car as unknown as TCar;
+    const pricePerHour = car.pricePerHour;
+    const carId = bookingInfo.car._id;
 
     const carUpdateResult = await CarModel.findByIdAndUpdate(
       carId,

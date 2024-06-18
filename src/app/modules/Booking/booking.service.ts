@@ -34,7 +34,7 @@ const getSingleUserBookingFromDB = async (id: string) => {
   return result;
 };
 
-const createBookingIntroDb = async (payload) => {
+const createBookingIntroDb = async (payload: Partial<TBooking>) => {
   // Check if the car exists and is available
   const isCarExist = await CarModel.findOne({
     _id: payload.car,
