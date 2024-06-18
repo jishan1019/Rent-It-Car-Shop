@@ -36,9 +36,29 @@ The Car Rental Server is a comprehensive application designed to facilitate the 
    ```
 
 3. **Run Project via below command**
+
    ```
    pnpm start:dev
    Project Running Port : http://localhost:4000
+   ```
+
+4. ** CREDENTIAL **
+
+   ```
+   user:
+
+    {
+    "email": "johndoe@example.com",
+    "password": "password123"
+    }
+
+   admin:
+
+   {
+    "email": "admin@example.com",
+    "password": "1234"
+   }
+
    ```
 
 ### Api Endpoints
