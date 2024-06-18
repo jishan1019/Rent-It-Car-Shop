@@ -1,7 +1,6 @@
 import httpStatus from "http-status";
 import QueryBuilder from "../../builder/QueryBuilder";
 import AppError from "../../errors/AppError";
-import { bookingSearchableFields } from "./booking.constant";
 import { TBooking } from "./booking.interface";
 import { BookingModel } from "./booking.model";
 import { CarModel } from "../Car/car.model";
@@ -9,23 +8,22 @@ import { CarBookingStatus } from "../Car/car.constant";
 
 const getAllBookingFromDB = async (query: Record<string, unknown>) => {
   const bookingQuery = new QueryBuilder(
-    BookingModel.find().populate("User").populate("Car"),
+    BookingModel.find().populate("user").populate("car"),
     query
   )
-    .search(bookingSearchableFields)
+    .search([])
     .filter()
     .sort()
-    .paginate()
     .fields();
 
   const result = await bookingQuery.modelQuery;
   return result;
 };
-
 const getSingleUserBookingFromDB = async (id: string) => {
-  const result = await BookingModel.find({ _id: id })
-    .populate("User")
-    .populate("Car");
+  const result = await BookingModel.find({ user: id })
+    .populate("user")
+    .populate("car");
+
   return result;
 };
 
