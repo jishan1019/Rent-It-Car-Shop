@@ -74,6 +74,7 @@ const returnCarIntoDb = async (payload: TReturnCar) => {
     const result = await BookingModel.findById(updateBookingResult?._id)
       .populate("user")
       .populate("car")
+      .session(session)
       .exec();
 
     if (!result) {
