@@ -7,6 +7,11 @@ import { CarModel } from "../Car/car.model";
 import { CarBookingStatus } from "../Car/car.constant";
 
 const getAllBookingFromDB = async (query: Record<string, unknown>) => {
+  if (query.carId) {
+    query.car = query.carId;
+    delete query.carId;
+  }
+
   const bookingQuery = new QueryBuilder(
     BookingModel.find().populate("user").populate("car"),
     query
@@ -19,6 +24,7 @@ const getAllBookingFromDB = async (query: Record<string, unknown>) => {
   const result = await bookingQuery.modelQuery;
   return result;
 };
+
 const getSingleUserBookingFromDB = async (id: string) => {
   const result = await BookingModel.find({ user: id })
     .populate("user")
