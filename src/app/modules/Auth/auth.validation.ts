@@ -7,4 +7,12 @@ const authValidationSchema = z.object({
   }),
 });
 
-export { authValidationSchema };
+const refreshTokenValidationSchema = z.object({
+  cookies: z.object({
+    refreshToken: z.string({
+      required_error: "Refresh token is required",
+    }),
+  }),
+});
+
+export { authValidationSchema, refreshTokenValidationSchema };
