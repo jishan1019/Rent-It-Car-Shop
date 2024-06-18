@@ -1,8 +1,9 @@
 import { Schema, model } from "mongoose";
-import { TUser } from "./user.interface";
+import { TUser, TUserModel } from "./user.interface";
 import { Role } from "./user.const";
+import argon2 from "argon2";
 
-const userSchema = new Schema<TUser>(
+const userSchema = new Schema<TUser, TUserModel>(
   {
     name: {
       type: String,
@@ -24,6 +25,7 @@ const userSchema = new Schema<TUser>(
     password: {
       type: String,
       required: [true, "Password is required"],
+      select: 0,
     },
     phone: {
       type: String,
@@ -39,6 +41,19 @@ const userSchema = new Schema<TUser>(
   }
 );
 
-const UserModel = model<TUser>("User", userSchema);
+userSchema.post("save", function (user, next) {
+  user.password = "";
+  next();
+});
+
+userSchema.statics.isUserExistsByCustomId = async function (id: string) {
+  return await this.findById(id).select("+password");
+};
+
+userSchema.statics.isPasswordMatch = async function (dbUserPass, payloadPass) {
+  return await argon2.verify(dbUserPass, payloadPass);
+};
+
+const UserModel = model<TUser, TUserModel>("User", userSchema);
 
 export { UserModel };

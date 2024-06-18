@@ -5,13 +5,14 @@ import AppError from "../../errors/AppError";
 import { TAuth } from "./auth.interface";
 
 const loginUserFromDb = async (payload: TAuth) => {
-  const isUserExist = await UserModel.findOne({ email: payload?.email });
-  if (!isUserExist) {
+  const user = await UserModel.findOne({ email: payload?.email });
+  if (!user) {
     throw new AppError(httpStatus.BAD_REQUEST, "User not found");
   }
 
-  const result = await UserModel.create(payload);
-  return result;
+  console.log(user);
+
+  return user;
 };
 
 const createUserIntroDb = async (payload: TUser) => {
