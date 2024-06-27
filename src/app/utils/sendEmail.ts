@@ -11,7 +11,8 @@ export const sendEmail = async (
   username: string,
   carName: string,
   bookingDate: string,
-  endingDate: string,
+  startTime: string,
+  endTime: string,
   totalPrice: number
 ) => {
   const htmlTemplatePath = path.join(__dirname, "../views/carReturn.html");
@@ -19,16 +20,16 @@ export const sendEmail = async (
   let htmlTemplate;
   try {
     htmlTemplate = fs.readFileSync(htmlTemplatePath, "utf8");
-  } catch (err) {
-    throw new AppError(httpStatus.BAD_REQUEST, err.message);
+  } catch (err: any) {
+    throw new AppError(httpStatus.BAD_REQUEST, err);
   }
 
-  // Replace placeholders with actual data
   const replacements = {
     username: username,
     carName: carName,
     bookingDate: bookingDate,
-    endingDate: endingDate,
+    startTime: startTime,
+    endTime: endTime,
     totalPrice: totalPrice,
   };
 
@@ -36,7 +37,7 @@ export const sendEmail = async (
   for (const placeholder in replacements) {
     inlineHtml = inlineHtml.replace(
       new RegExp(`{{${placeholder}}}`, "g"),
-      replacements[placeholder]
+      replacements[placeholder as keyof typeof replacements] as string
     );
   }
 

@@ -7,6 +7,9 @@ import { calculateTotalCost } from "./car.utils";
 import { CarBookingStatus } from "./car.constant";
 import mongoose from "mongoose";
 import { BOOKING_STATUS } from "../Booking/booking.constant";
+import { sendEmail } from "../../utils/sendEmail";
+import { TUser } from "../User/user.interface";
+import { TBookingPopulatedCar } from "../Booking/booking.interface";
 
 const getAllCarFromDB = async () => {
   const result = await CarModel.find();
@@ -65,6 +68,18 @@ const returnCarIntoDb = async (payload: TReturnCar) => {
       .populate("car")
       .session(session)
       .exec();
+
+    const { user, car } = result as unknown as TBookingPopulatedCar;
+
+    sendEmail(
+      user?.email,
+      user?.name,
+      car?.name,
+      result?.date as string,
+      result?.startTime as string,
+      result?.endTime as string,
+      result?.totalCost as number
+    );
 
     if (!result) {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to get booking");
