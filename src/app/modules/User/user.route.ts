@@ -19,4 +19,6 @@ router.patch(
 
 router.delete("/:_id", auth(USER_ROLE.admin), UserController.deleteUser);
 
+router.get("/me", auth(USER_ROLE.admin, USER_ROLE.user), UserController.getMe);
+
 export const UserRoutes = router;

@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import { TBooking } from "./booking.interface";
+import { BOOKING_STATUS, BookingStatus } from "./booking.constant";
 
 const bookingSchema = new Schema<TBooking>(
   {
@@ -29,6 +30,15 @@ const bookingSchema = new Schema<TBooking>(
     totalCost: {
       type: Number,
       default: 0,
+    },
+    bookingStatus: {
+      type: String,
+      enum: {
+        values: BookingStatus,
+        message: "{VALUE} is not a valid booking status",
+      },
+      required: [true, "Booking Status is required"],
+      default: BOOKING_STATUS.inProgress,
     },
   },
   {

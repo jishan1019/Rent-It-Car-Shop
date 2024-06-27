@@ -6,6 +6,7 @@ import { BookingModel } from "../Booking/booking.model";
 import { calculateTotalCost } from "./car.utils";
 import { CarBookingStatus } from "./car.constant";
 import mongoose from "mongoose";
+import { BOOKING_STATUS } from "../Booking/booking.constant";
 
 const getAllCarFromDB = async () => {
   const result = await CarModel.find();
@@ -23,7 +24,7 @@ const createCarIntroDb = async (payload: TCar) => {
 };
 
 const returnCarIntoDb = async (payload: TReturnCar) => {
-  const bookingId = payload.bookingId;
+  const bookingId = payload?.bookingId;
 
   const bookingInfo = await BookingModel.findById(bookingId)
     .populate("user")
@@ -37,9 +38,6 @@ const returnCarIntoDb = async (payload: TReturnCar) => {
 
   try {
     session.startTransaction();
-
-    const car = bookingInfo.car as unknown as TCar;
-    const pricePerHour = car.pricePerHour;
     const carId = bookingInfo.car._id;
 
     const carUpdateResult = await CarModel.findByIdAndUpdate(
@@ -52,20 +50,9 @@ const returnCarIntoDb = async (payload: TReturnCar) => {
       throw new AppError(httpStatus.BAD_REQUEST, "Failed to update car status");
     }
 
-    const totalCost = calculateTotalCost(
-      bookingInfo?.startTime,
-      payload?.endTime,
-      pricePerHour
-    );
-
-    const bookingUpdateData = {
-      endTime: payload.endTime,
-      totalCost,
-    };
-
     const updateBookingResult = await BookingModel.findByIdAndUpdate(
       bookingId,
-      bookingUpdateData,
+      { bookingStatus: BOOKING_STATUS.returned },
       { new: true, session }
     );
 
@@ -95,6 +82,54 @@ const returnCarIntoDb = async (payload: TReturnCar) => {
   }
 };
 
+const createRetuningReqCarIntoDb = async (payload: TReturnCar) => {
+  const bookingId = payload.bookingId;
+
+  const bookingInfo = await BookingModel.findById(bookingId)
+    .populate("user")
+    .populate("car");
+
+  if (!bookingInfo) {
+    throw new AppError(httpStatus.BAD_REQUEST, "This Booking not exists.");
+  }
+
+  const car = bookingInfo.car as unknown as TCar;
+  const pricePerHour = car.pricePerHour;
+
+  const totalCost = calculateTotalCost(
+    bookingInfo?.startTime,
+    payload?.endTime,
+    pricePerHour
+  );
+
+  const bookingUpdateData = {
+    endTime: payload?.endTime,
+    totalCost,
+    bookingStatus: BOOKING_STATUS.returning,
+  };
+
+  const updateBookingResult = await BookingModel.findByIdAndUpdate(
+    bookingId,
+    bookingUpdateData,
+    { new: true }
+  );
+
+  if (!updateBookingResult) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Failed to update booking");
+  }
+
+  const result = await BookingModel.findById(updateBookingResult?._id)
+    .populate("user")
+    .populate("car")
+    .exec();
+
+  if (!result) {
+    throw new AppError(httpStatus.BAD_REQUEST, "Failed to get booking");
+  }
+
+  return result;
+};
+
 const updateCarIntroDb = async (id: string, payload: Partial<TCar>) => {
   const isUserExist = await CarModel.findById(id);
   if (!isUserExist) {
@@ -121,4 +156,5 @@ export const CarService = {
   returnCarIntoDb,
   updateCarIntroDb,
   deleteSingleCarFromDB,
+  createRetuningReqCarIntoDb,
 };

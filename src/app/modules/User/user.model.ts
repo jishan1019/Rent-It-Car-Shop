@@ -35,6 +35,10 @@ const userSchema = new Schema<TUser, TUserModel>(
       type: String,
       required: [true, "Address is required"],
     },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
@@ -47,7 +51,7 @@ userSchema.post("save", function (user, next) {
 });
 
 userSchema.statics.isUserExistsByCustomId = async function (id: string) {
-  return await this.findById(id).select("+password");
+  return await this.findOne({ _id: id, isDeleted: false }).select("+password");
 };
 
 userSchema.statics.isPasswordMatch = async function (dbUserPass, payloadPass) {

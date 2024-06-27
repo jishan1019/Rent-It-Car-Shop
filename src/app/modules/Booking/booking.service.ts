@@ -6,6 +6,7 @@ import { BookingModel } from "./booking.model";
 import { CarModel } from "../Car/car.model";
 import { CarBookingStatus } from "../Car/car.constant";
 import mongoose from "mongoose";
+import { BOOKING_STATUS } from "./booking.constant";
 
 const getAllBookingFromDB = async (query: Record<string, unknown>) => {
   if (query.carId) {
@@ -27,7 +28,23 @@ const getAllBookingFromDB = async (query: Record<string, unknown>) => {
 };
 
 const getSingleUserBookingFromDB = async (id: string) => {
-  const result = await BookingModel.find({ user: id })
+  const result = await BookingModel.find({
+    user: id,
+    bookingStatus: {
+      $or: [BOOKING_STATUS.inProgress, BOOKING_STATUS.returning],
+    },
+  })
+    .populate("user")
+    .populate("car");
+
+  return result;
+};
+
+const getUserBookingHistory = async (id: string) => {
+  const result = await BookingModel.find({
+    user: id,
+    bookingStatus: BOOKING_STATUS.returned,
+  })
     .populate("user")
     .populate("car");
 
@@ -88,4 +105,5 @@ export const BookingService = {
   getAllBookingFromDB,
   getSingleUserBookingFromDB,
   createBookingIntroDb,
+  getUserBookingHistory,
 };

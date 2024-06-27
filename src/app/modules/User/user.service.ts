@@ -9,12 +9,21 @@ const getAllUserFromDB = async () => {
 };
 
 const getSingleUserFromDB = async (id: string) => {
-  const result = await UserModel.findById(id);
-  return result;
+  const user = await UserModel.findOne({ _id: id }, { isDeleted: false });
+
+  if (!user) {
+    throw new AppError(httpStatus.BAD_REQUEST, "User not exists.");
+  }
+
+  return user;
 };
 
 const updateUserIntroDb = async (id: string, payload: Partial<TUser>) => {
-  const isUserExist = await UserModel.findById(id);
+  const isUserExist = await UserModel.findOne(
+    { _id: id },
+    { isDeleted: false }
+  );
+
   if (!isUserExist) {
     throw new AppError(httpStatus.BAD_REQUEST, "User not exists.");
   }
@@ -24,8 +33,22 @@ const updateUserIntroDb = async (id: string, payload: Partial<TUser>) => {
 };
 
 const deleteSingleUserFromDB = async (id: string) => {
-  const result = await UserModel.deleteOne({ _id: id });
+  const result = await UserModel.findByIdAndUpdate(
+    id,
+    { isDeleted: true },
+    { new: true }
+  );
   return result;
+};
+
+const getMeFromDb = async (id: string) => {
+  const user = await UserModel.findOne({ _id: id }, { isDeleted: false });
+
+  if (!user) {
+    throw new AppError(httpStatus.BAD_REQUEST, "User not exists.");
+  }
+
+  return user;
 };
 
 export const UserService = {
@@ -33,4 +56,5 @@ export const UserService = {
   getSingleUserFromDB,
   updateUserIntroDb,
   deleteSingleUserFromDB,
+  getMeFromDb,
 };

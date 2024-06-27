@@ -8,7 +8,10 @@ import config from "../../config";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 const loginUserFromDb = async (payload: TAuth) => {
-  const user = await UserModel.findOne({ email: payload?.email });
+  const user = await UserModel.findOne({
+    email: payload?.email,
+    isDeleted: false,
+  });
 
   if (!user) {
     throw new AppError(httpStatus.BAD_REQUEST, "User not found");

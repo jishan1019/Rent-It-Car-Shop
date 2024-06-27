@@ -27,6 +27,18 @@ const getSingleBooking = catchAsync(async (req, res) => {
   });
 });
 
+const getUserBookingsHistory = catchAsync(async (req, res) => {
+  const userId = req.user.userId || "";
+  const result = await BookingService.getUserBookingHistory(userId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "My All Bookings retrieved successfully",
+    data: result,
+  });
+});
+
 const createBooking = catchAsync(async (req, res) => {
   const userId = req.user.userId || "";
 
@@ -50,4 +62,5 @@ export const BookingController = {
   getAllBooking,
   getSingleBooking,
   createBooking,
+  getUserBookingsHistory,
 };

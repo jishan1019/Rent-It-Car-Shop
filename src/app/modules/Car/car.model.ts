@@ -28,6 +28,10 @@ const carSchema = new Schema<TCar>(
       type: Number,
       required: [true, "Price per hour is required"],
     },
+    carImg: {
+      type: String,
+      default: "https://i.ibb.co/6DfBLBp/image.png",
+    },
     status: {
       type: String,
       enum: {

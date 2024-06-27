@@ -12,6 +12,7 @@ export type TCar = {
   pricePerHour: number;
   status?: TCarStatus;
   isDeleted?: boolean;
+  carImg?: string;
 };
 
 export type TReturnCar = {

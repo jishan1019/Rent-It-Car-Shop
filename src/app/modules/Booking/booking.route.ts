@@ -13,10 +13,16 @@ router.get(
   "/my-bookings",
   auth(USER_ROLE.user),
   BookingController.getSingleBooking
-); //user all booking
+); //user all inrogress returning booking
+
+router.get(
+  "/my-bookings-history",
+  auth(USER_ROLE.user),
+  BookingController.getUserBookingsHistory
+); //user all return booking
 
 router.post(
-  "/",
+  "/create-bookings",
   auth(USER_ROLE.user),
   validateRequest(bookingValidationSchema),
   BookingController.createBooking //user only

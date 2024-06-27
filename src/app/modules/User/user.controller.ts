@@ -50,9 +50,23 @@ const deleteUser = catchAsync(async (req, res) => {
   });
 });
 
+const getMe = catchAsync(async (req, res) => {
+  const { userId } = req.user;
+
+  const result = await UserService.getMeFromDb(userId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User is retrieved successfully",
+    data: result,
+  });
+});
+
 export const UserController = {
   getAllUser,
   getSingleUser,
   updateUser,
   deleteUser,
+  getMe,
 };

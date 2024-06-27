@@ -29,6 +29,13 @@ router.put(
 );
 
 router.put(
+  "/create-retuning-request",
+  auth(USER_ROLE.user),
+  validateRequest(carReturnValidationSchema),
+  CarController.createRetuningRequest //admin
+);
+
+router.put(
   "/:id",
   auth(USER_ROLE.admin),
   validateRequest(updateCarValidationSchema),

@@ -9,6 +9,7 @@ export type TUser = {
   password: string;
   phone: string;
   address: string;
+  isDeleted: boolean;
 };
 
 export interface TUserModel extends Model<TUser> {

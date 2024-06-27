@@ -49,6 +49,18 @@ const returnCar = catchAsync(async (req, res) => {
   });
 });
 
+const createRetuningRequest = catchAsync(async (req, res) => {
+  const data = req.body;
+  const result = await CarService.createRetuningReqCarIntoDb(data);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Car retuning request created",
+    data: result,
+  });
+});
+
 const updateCar = catchAsync(async (req, res) => {
   const { id } = req.params;
   const result = await CarService.updateCarIntroDb(id, req.body);
@@ -80,4 +92,5 @@ export const CarController = {
   returnCar,
   updateCar,
   deleteCar,
+  createRetuningRequest,
 };
