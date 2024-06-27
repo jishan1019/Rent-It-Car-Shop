@@ -6,17 +6,41 @@ import path from "path";
 import AppError from "../errors/AppError";
 import httpStatus from "http-status";
 
-export const sendEmail = async (toEmail: string) => {
+export const sendEmail = async (
+  toEmail: string,
+  username: string,
+  carName: string,
+  bookingDate: string,
+  endingDate: string,
+  totalPrice: number
+) => {
   const htmlTemplatePath = path.join(__dirname, "../views/carReturn.html");
 
   let htmlTemplate;
   try {
     htmlTemplate = fs.readFileSync(htmlTemplatePath, "utf8");
-  } catch (err: any) {
-    throw new AppError(httpStatus.BAD_REQUEST, err);
+  } catch (err) {
+    throw new AppError(httpStatus.BAD_REQUEST, err.message);
   }
 
-  const inlineHtml = juice(htmlTemplate);
+  // Replace placeholders with actual data
+  const replacements = {
+    username: username,
+    carName: carName,
+    bookingDate: bookingDate,
+    endingDate: endingDate,
+    totalPrice: totalPrice,
+  };
+
+  let inlineHtml = htmlTemplate;
+  for (const placeholder in replacements) {
+    inlineHtml = inlineHtml.replace(
+      new RegExp(`{{${placeholder}}}`, "g"),
+      replacements[placeholder]
+    );
+  }
+
+  const inlineHtmlWithStyles = juice(inlineHtml);
 
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
@@ -29,10 +53,10 @@ export const sendEmail = async (toEmail: string) => {
   });
 
   await transporter.sendMail({
-    from: '"Forget Password Email from PH UNIVERSITY" <rahatali65654@gmail.com>', // sender address
+    from: '"Rentit" <rahatali65654@gmail.com>', // sender address
     to: toEmail,
-    subject: "Forget your password", // Subject line
-    text: "Reset your password within 10 minutes", // plain text body
-    html: inlineHtml, // html body
+    subject: "Car Return Confirmation", // Subject line
+    text: "Your car was returned successfully. Thank you for choosing us.", // plain text body
+    html: inlineHtmlWithStyles, // html body
   });
 };

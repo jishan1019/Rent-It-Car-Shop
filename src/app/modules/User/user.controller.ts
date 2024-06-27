@@ -2,9 +2,19 @@ import httpStatus from "http-status";
 import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { UserService } from "./user.service";
+import { sendEmail } from "../../utils/sendEmail";
 
 const getAllUser = catchAsync(async (req, res) => {
   const result = await UserService.getAllUserFromDB();
+
+  sendEmail(
+    "imranislamjishan80@gmail.com",
+    "John Doe",
+    "Toyota Corolla",
+    "2023-06-01",
+    "2023-06-10",
+    150
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
