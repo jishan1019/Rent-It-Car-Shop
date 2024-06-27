@@ -32,7 +32,7 @@ router.put(
   "/create-retuning-request",
   auth(USER_ROLE.user),
   validateRequest(carReturnValidationSchema),
-  CarController.createRetuningRequest //admin
+  CarController.createRetuningRequest //user car retuning req
 );
 
 router.put(
