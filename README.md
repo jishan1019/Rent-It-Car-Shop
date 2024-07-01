@@ -26,7 +26,7 @@ The Car Rental Server is a comprehensive application designed to facilitate the 
 
    ```sh
    git clone https://github.com/jishan1019/Car-Rental-Shop-Assignment-3.git
-   cd car-rental-shop-assignment3
+   cd rent-it-car-shop
    ```
 
 2. **Install Necessary Dependency via command**
