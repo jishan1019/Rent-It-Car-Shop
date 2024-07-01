@@ -7,19 +7,23 @@ import { USER_ROLE } from "../User/user.const";
 
 const router = Router();
 
-router.get("/", auth(USER_ROLE.admin), BookingController.getAllBooking); //admin
+router.get(
+  "/all-booking",
+  auth(USER_ROLE.admin),
+  BookingController.getAllBooking
+); //admin
 
 router.get(
   "/my-bookings",
   auth(USER_ROLE.user),
   BookingController.getSingleBooking
-); //user all inrogress returning booking
+); //user all in-progress returning booking
 
 router.get(
   "/my-bookings-history",
   auth(USER_ROLE.user),
   BookingController.getUserBookingsHistory
-); //user all return booking
+); //user all return booking.
 
 router.post(
   "/create-bookings",

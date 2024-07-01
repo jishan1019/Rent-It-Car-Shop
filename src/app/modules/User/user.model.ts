@@ -45,6 +45,18 @@ const userSchema = new Schema<TUser, TUserModel>(
   }
 );
 
+//pre save middleware // work on save function
+userSchema.pre("save", async function (next) {
+  try {
+    const hash = await argon2.hash(this.password);
+    this.password = hash;
+
+    next();
+  } catch (err: any) {
+    next(err);
+  }
+});
+
 userSchema.post("save", function (user, next) {
   user.password = "";
   next();

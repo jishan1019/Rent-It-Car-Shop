@@ -8,7 +8,6 @@ import { CarBookingStatus } from "./car.constant";
 import mongoose from "mongoose";
 import { BOOKING_STATUS } from "../Booking/booking.constant";
 import { sendEmail } from "../../utils/sendEmail";
-import { TUser } from "../User/user.interface";
 import { TBookingPopulatedCar } from "../Booking/booking.interface";
 
 const getAllCarFromDB = async () => {

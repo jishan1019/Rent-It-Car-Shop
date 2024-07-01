@@ -34,6 +34,7 @@ export const sendEmail = async (
   };
 
   let inlineHtml = htmlTemplate;
+
   for (const placeholder in replacements) {
     inlineHtml = inlineHtml.replace(
       new RegExp(`{{${placeholder}}}`, "g"),

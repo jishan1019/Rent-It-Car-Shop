@@ -7,17 +7,21 @@ import { USER_ROLE } from "./user.const";
 
 const router = Router();
 
-router.get("/", UserController.getAllUser);
-router.get("/:_id", UserController.getSingleUser);
+router.get("/all-user", UserController.getAllUser);
+router.get("/single-user/:_id", UserController.getSingleUser);
 
 router.patch(
-  "/:_id",
+  "/update-user/:_id",
   auth(USER_ROLE.admin, USER_ROLE.user),
   validateRequest(updateUserValidationSchema),
   UserController.updateUser
 );
 
-router.delete("/:_id", auth(USER_ROLE.admin), UserController.deleteUser);
+router.delete(
+  "/delete-user/:_id",
+  auth(USER_ROLE.admin),
+  UserController.deleteUser
+);
 
 router.get("/me", auth(USER_ROLE.admin, USER_ROLE.user), UserController.getMe);
 

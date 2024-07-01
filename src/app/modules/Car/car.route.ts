@@ -11,11 +11,11 @@ import { USER_ROLE } from "../User/user.const";
 
 const router = Router();
 
-router.get("/", CarController.getAllCar);
-router.get("/:id", CarController.getSingleCar);
+router.get("/all-car", CarController.getAllCar);
+router.get("/single-car/:id", CarController.getSingleCar);
 
 router.post(
-  "/",
+  "/create-car",
   auth(USER_ROLE.admin),
   validateRequest(carValidationSchema),
   CarController.createCar // admin
@@ -36,12 +36,16 @@ router.put(
 );
 
 router.put(
-  "/:id",
+  "/update-car/:id",
   auth(USER_ROLE.admin),
   validateRequest(updateCarValidationSchema),
   CarController.updateCar //admin
 );
 
-router.delete("/:id", auth(USER_ROLE.admin), CarController.deleteCar); //admin
+router.delete(
+  "/delete-car/:id",
+  auth(USER_ROLE.admin),
+  CarController.deleteCar
+); //admin
 
 export const CarRoutes = router;
